@@ -125,4 +125,4 @@ export PATH="$PATH:/Users/nsimpson/.local/bin"
 
 [ -f "/Users/nsimpson/.ghcup/env" ] && . "/Users/nsimpson/.ghcup/env" # ghcup-env
 
-bindkey -v  # vi bindings for zsh
+# bindkey -v  # vi bindings for zsh

@@ -14,7 +14,7 @@ local emoji_fonts = { "Apple Color Emoji", "Joypixels", "Twemoji", "Noto Color E
 config.font = wezterm.font_with_fallback({ fonts[1], emoji_fonts[1], emoji_fonts[2] })
 config.enable_scroll_bar = false
 config.scrollback_lines = 10240
-config.font_size = 18
+config.font_size = 16
 config.enable_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
 config.automatically_reload_config = true
@@ -35,6 +35,44 @@ config.window_frame = {
 	inactive_titlebar_bg = "#1e1e1e",
 	font_size = 15.0,
 }
+
+-- leader is control+a
+config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
+config.keys = {
+  -- splitting: control+a+- for vertical, control+a+= for horizontal
+  -- navigating back / forth between splits is Command+tab / shift+tab
+  {
+    mods   = "LEADER",
+    key    = "-",
+    action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' }
+  },
+  {
+    mods   = "LEADER",
+    key    = "=",
+    action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' }
+  },
+  {
+    mods = "LEADER",
+    key = "h",
+    action = wezterm.action.ActivatePaneDirection("Left")
+  },
+  {
+    mods = "LEADER",
+    key = "j",
+    action = wezterm.action.ActivatePaneDirection("Down")
+  },
+  {
+    mods = "LEADER",
+    key = "k",
+    action = wezterm.action.ActivatePaneDirection("Up")
+  },
+  {
+    mods = "LEADER",
+    key = "l",
+    action = wezterm.action.ActivatePaneDirection("Right")
+  }
+}
+
 
 config.color_scheme = 'Gruvbox Dark (Gogh)'
 
