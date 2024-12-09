@@ -41,6 +41,26 @@ require("lazy").setup({
   -- Commentary plugin
   "tpope/vim-commentary",
 
+  -- Quarto
+  {
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "jmbuhr/otter.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+        require('quarto').setup({
+        -- Basic configuration
+        lspFeatures = {
+          enabled = true,
+          languages = { 'r', 'python', 'julia' },
+          diagnostics = {
+            enabled = true,
+          }, 
+        }})
+    end
+  },
+
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
@@ -75,6 +95,7 @@ require("lazy").setup({
       local lspconfig = require("lspconfig")
       lspconfig.pyright.setup{}
       lspconfig.hls.setup{}
+
 
       -- Global mappings
       vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)

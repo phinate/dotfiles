@@ -2,6 +2,7 @@ local wezterm = require("wezterm")
 
 local config = {}
 
+-- Check if config_builder is available and use it if possible
 if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
@@ -14,13 +15,13 @@ local emoji_fonts = { "Apple Color Emoji", "Joypixels", "Twemoji", "Noto Color E
 config.font = wezterm.font_with_fallback({ fonts[1], emoji_fonts[1], emoji_fonts[2] })
 config.enable_scroll_bar = false
 config.scrollback_lines = 10240
-config.font_size = 16
+config.font_size = 13
 config.enable_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
 config.automatically_reload_config = true
 config.default_cursor_style = "BlinkingBar"
-config.initial_cols = 80
-config.initial_rows = 25
+config.initial_cols = 132 
+config.initial_rows = 43 
 config.use_fancy_tab_bar = true
 config.tab_bar_at_bottom = false
 config.window_padding = {
@@ -33,14 +34,14 @@ config.window_frame = {
 	font = wezterm.font({ family = "ComicCodeLigatures Nerd Font" }),
 	active_titlebar_bg = "#1e1e1e",
 	inactive_titlebar_bg = "#1e1e1e",
-	font_size = 15.0,
+	font_size = 12.0,
 }
 
--- leader is control+a
-config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
+-- Leader is CMD+a
+config.leader = { key = 'a', mods = 'CMD', timeout_milliseconds = 1000 }
+
+-- Key bindings
 config.keys = {
-  -- splitting: control+a+- for vertical, control+a+= for horizontal
-  -- navigating back / forth between splits is Command+tab / shift+tab
   {
     mods   = "LEADER",
     key    = "-",
@@ -70,9 +71,13 @@ config.keys = {
     mods = "LEADER",
     key = "l",
     action = wezterm.action.ActivatePaneDirection("Right")
-  }
+  },
+  {
+    key = 'p',
+    mods = 'CMD',
+    action = wezterm.action.CloseCurrentPane { confirm = true },
+  },
 }
-
 
 config.color_scheme = 'Gruvbox Dark (Gogh)'
 
@@ -101,15 +106,19 @@ config.colors = {
 		},
 	},
 }
+
+local mux = wezterm.mux
+
+wezterm.on('gui-startup', function(cmd)
+  local tab, pane, window = mux.spawn_window(cmd or {})
+  pane:split { direction = "Bottom", size = 0.3 }
+  window:perform_action(wezterm.action.ActivatePaneDirection("Up"), pane)
+
+end)
+
 config.native_macos_fullscreen_mode = false
--- wezterm.on('gui-attached', function(domain)
---   -- maximize all displayed windows on startup
---   local workspace = mux.get_active_workspace()
---   for _, window in ipairs(mux.all_windows()) do
---     if window:get_workspace() == workspace then
---       window:gui_window():maximize()
---     end
---   end
--- end)
 config.show_update_window = false
+
+-- Return the config table at the end
 return config
+
