@@ -19,7 +19,7 @@ vim.opt.formatoptions:remove({ "o" })
 
 -- plugins
 vim.pack.add({
-		{ src = "https://github.com/ellisonleao/gruvbox.nvim"},
+	{ src = "https://github.com/ellisonleao/gruvbox.nvim" },
 	{ src = "https://github.com/echasnovski/mini.pick" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
@@ -38,39 +38,39 @@ vim.cmd("set completeopt+=noselect")
 
 -- ruff
 vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client == nil then
-      return
-    end
-    if client.name == 'ruff' then
-      -- Disable hover in favor of Pyright
-      client.server_capabilities.hoverProvider = false
-    end
-  end,
-  desc = 'LSP: Disable hover capability from Ruff',
+	group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		if client == nil then
+			return
+		end
+		if client.name == 'ruff' then
+			-- Disable hover in favor of Pyright
+			client.server_capabilities.hoverProvider = false
+		end
+	end,
+	desc = 'LSP: Disable hover capability from Ruff',
 })
 
 require('lspconfig').pyright.setup {
-  settings = {
-    pyright = {
-      -- Using Ruff's import organizer
-      disableOrganizeImports = true,
-    },
-    python = {
-      analysis = {
-        -- Ignore all files for analysis to exclusively use Ruff for linting
-        ignore = { '*' },
-      },
-    },
-  },
+	settings = {
+		pyright = {
+			-- Using Ruff's import organizer
+			disableOrganizeImports = true,
+		},
+		python = {
+			analysis = {
+				-- Ignore all files for analysis to exclusively use Ruff for linting
+				ignore = { '*' },
+			},
+		},
+	},
 }
 
 require "mini.pick".setup()
 require "nvim-treesitter.configs".setup({
-		ensure_installed = { "python" },
-		highlight = { enable = true }
+	ensure_installed = { "python" },
+	highlight = { enable = true }
 })
 
 vim.keymap.set('n', '<leader>f', ":Pick files<CR>")
@@ -78,5 +78,5 @@ vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
 vim.keymap.set('n', '<leader>L', vim.lsp.buf.format)
 
 vim.lsp.enable({ "lua_ls", "pyright", "ruff" })
-require "gruvbox".setup({transparent_mode = true })
+require "gruvbox".setup({ transparent_mode = true })
 vim.cmd("colorscheme gruvbox")
