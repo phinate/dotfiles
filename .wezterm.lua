@@ -20,8 +20,8 @@ config.enable_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
 config.automatically_reload_config = true
 config.default_cursor_style = "BlinkingBar"
-config.initial_cols = 132 
-config.initial_rows = 43 
+config.initial_cols = 132
+config.initial_rows = 43
 config.use_fancy_tab_bar = true
 config.tab_bar_at_bottom = false
 config.window_padding = {
@@ -44,12 +44,12 @@ config.leader = { key = 'a', mods = 'CMD', timeout_milliseconds = 1000 }
 config.keys = {
   {
     mods   = "LEADER",
-    key    = "-",
+    key    = "\\",
     action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' }
   },
   {
     mods   = "LEADER",
-    key    = "=",
+    key    = "-",
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' }
   },
   {
@@ -118,6 +118,7 @@ end)
 
 config.native_macos_fullscreen_mode = false
 config.show_update_window = false
+config.window_background_opacity = 0.95
 
 -- Return the config table at the end
 return config

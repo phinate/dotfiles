@@ -1,9 +1,11 @@
 -- style & admin
-vim.o.termguicolors = true
-vim.o.tabstop = 4
-vim.o.winborder = "rounded"
-vim.o.clipboard = "unnamedplus"
-vim.o.signcolumn = "yes"
+vim.opt.termguicolors = true
+vim.opt.tabstop = 4
+vim.opt.winborder = "rounded"
+vim.opt.clipboard = "unnamedplus"
+vim.opt.signcolumn = "yes"
+vim.opt.swapfile = false
+vim.opt.cursorcolumn = false
 
 -- leader & keybinds
 vim.g.mapleader = " "
@@ -11,7 +13,7 @@ vim.keymap.set('n', '<leader>o', ':update<CR> :source<CR>')
 vim.keymap.set('n', '<leader>w', ':write<CR>')
 vim.keymap.set('n', '<leader>q', ':quit<CR>')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"*y<CR>')
-
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 -- don't start new comment paragraph with 'o' or 'O'
 -- when in comment context (enter still works)
 -- okay apparently this needs to be sourced to work? idk...
@@ -52,7 +54,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	desc = 'LSP: Disable hover capability from Ruff',
 })
 
-require('lspconfig').pyright.setup {
+vim.lsp.enable({ "lua_ls", "pyright", "ruff" })
+vim.lsp.config("pyright", {
 	settings = {
 		pyright = {
 			-- Using Ruff's import organizer
@@ -65,7 +68,17 @@ require('lspconfig').pyright.setup {
 			},
 		},
 	},
-}
+})
+
+vim.lsp.config("lua_ls", {
+	settings = {
+		Lua = {
+			workspace = {
+				library = vim.api.nvim_get_runtime_file("", true),
+			}
+		}
+	}
+})
 
 require "mini.pick".setup()
 require "nvim-treesitter.configs".setup({
@@ -75,8 +88,7 @@ require "nvim-treesitter.configs".setup({
 
 vim.keymap.set('n', '<leader>f', ":Pick files<CR>")
 vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
-vim.keymap.set('n', '<leader>L', vim.lsp.buf.format)
+vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
-vim.lsp.enable({ "lua_ls", "pyright", "ruff" })
 require "gruvbox".setup({ transparent_mode = true })
 vim.cmd("colorscheme gruvbox")
