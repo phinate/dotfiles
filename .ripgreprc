@@ -1,0 +1,6 @@
+--hidden
+--no-ignore-vcs
+--smart-case
+--max-columns=150
+--max-columns-preview
+

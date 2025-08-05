@@ -86,7 +86,7 @@ require "nvim-treesitter.configs".setup({
 	highlight = { enable = true }
 })
 
-vim.keymap.set('n', '<leader>f', ":Pick files<CR>")
+vim.keymap.set('n', '<leader>f', ":Pick files tool='rg'<CR>")
 vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
