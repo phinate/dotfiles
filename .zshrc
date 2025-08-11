@@ -1,3 +1,8 @@
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+
+# ls alias for color, directories and all dotfiles
+alias ls='ls -GpA'
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
