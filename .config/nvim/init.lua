@@ -16,7 +16,9 @@ vim.keymap.set('n', '<leader>q', ':quit<CR>')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"*y<CR>')
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
-vim.keymap.set('n', '<leader>z', ':e ~/.config/zsh/.zshrc<CR>')
+-- toggle between two files
+vim.keymap.set('n', '<leader>s', ':e #<CR>')
+
 -- don't start new comment paragraph with 'o' or 'O'
 -- when in comment context (enter still works)
 -- okay apparently this needs to be sourced to work? idk...
