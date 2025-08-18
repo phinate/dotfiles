@@ -6,6 +6,7 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.signcolumn = "yes"
 vim.opt.swapfile = false
 vim.opt.cursorcolumn = false
+vim.opt.number = true
 
 -- leader & keybinds
 vim.g.mapleader = " "
@@ -14,6 +15,8 @@ vim.keymap.set('n', '<leader>w', ':write<CR>')
 vim.keymap.set('n', '<leader>q', ':quit<CR>')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"*y<CR>')
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
+vim.keymap.set('n', '<leader>z', ':e ~/.config/zsh/.zshrc<CR>')
 -- don't start new comment paragraph with 'o' or 'O'
 -- when in comment context (enter still works)
 -- okay apparently this needs to be sourced to work? idk...
@@ -25,7 +28,29 @@ vim.pack.add({
 	{ src = "https://github.com/echasnovski/mini.pick" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
+	{ src = "https://github.com/mason-org/mason.nvim" },
+	{ src = "https://github.com/echasnovski/mini.extra" },
 })
+
+require "mini.pick".setup()
+require "mini.extra".setup()
+require "mason".setup()
+require "nvim-treesitter.configs".setup({
+	ensure_installed = { "python" },
+	highlight = { enable = true }
+})
+
+-- plugin-specific maps
+vim.keymap.set('n', '<leader>f', ":Pick files tool='git'<CR>")
+vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
+vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+
+-- map: fuzzy-find symbols (functions/classes/etc.) across the project,
+--    <CR> opens the file at the symbol's definition.
+vim.keymap.set("n", "<leader>F", function()
+	require("mini.extra").pickers.lsp({ scope = "workspace_symbol" })
+end, { desc = "Search symbols (workspace)" })
+
 
 -- lsp
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -38,37 +63,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 vim.cmd("set completeopt+=noselect")
 
--- ruff
-vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
-	callback = function(args)
-		local client = vim.lsp.get_client_by_id(args.data.client_id)
-		if client == nil then
-			return
-		end
-		if client.name == 'ruff' then
-			-- Disable hover in favor of Pyright
-			client.server_capabilities.hoverProvider = false
-		end
+
+vim.api.nvim_create_autocmd('LspAttach', {
+	group = vim.api.nvim_create_augroup('lsp_keys', { clear = true }),
+	callback = function(ev)
+		local buf = ev.buf
+		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = buf, desc = 'LSP: definition' })
+		vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = buf, desc = 'LSP: declaration' })
+		vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = buf, desc = 'LSP: implementation' })
+		vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = buf, desc = 'LSP: references' })
 	end,
-	desc = 'LSP: Disable hover capability from Ruff',
 })
 
-vim.lsp.enable({ "lua_ls", "pyright", "ruff" })
-vim.lsp.config("pyright", {
-	settings = {
-		pyright = {
-			-- Using Ruff's import organizer
-			disableOrganizeImports = true,
-		},
-		python = {
-			analysis = {
-				-- Ignore all files for analysis to exclusively use Ruff for linting
-				ignore = { '*' },
-			},
-		},
-	},
-})
+vim.lsp.enable({ "lua_ls", "pyright" })
 
 vim.lsp.config("lua_ls", {
 	settings = {
@@ -79,16 +86,6 @@ vim.lsp.config("lua_ls", {
 		}
 	}
 })
-
-require "mini.pick".setup()
-require "nvim-treesitter.configs".setup({
-	ensure_installed = { "python" },
-	highlight = { enable = true }
-})
-
-vim.keymap.set('n', '<leader>f', ":Pick files tool='rg'<CR>")
-vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
-vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
 require "gruvbox".setup({ transparent_mode = true })
 vim.cmd("colorscheme gruvbox")
