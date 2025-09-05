@@ -32,6 +32,7 @@ vim.pack.add({
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/echasnovski/mini.extra" },
+	{ src = "https://github.com/stevearc/oil.nvim" },
 })
 
 require "mini.pick".setup()
@@ -41,11 +42,13 @@ require "nvim-treesitter.configs".setup({
 	ensure_installed = { "python" },
 	highlight = { enable = true }
 })
+require "oil".setup()
 
 -- plugin-specific maps
-vim.keymap.set('n', '<leader>f', ":Pick files tool='git'<CR>")
+vim.keymap.set('n', '<leader>f', ":Pick files tool='rg'<CR>")
 vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+vim.keymap.set('n', '<leader>O', ":Oil<CR>")
 
 -- map: fuzzy-find symbols (functions/classes/etc.) across the project,
 --    <CR> opens the file at the symbol's definition.
@@ -53,6 +56,18 @@ vim.keymap.set("n", "<leader>F", function()
 	require("mini.extra").pickers.lsp({ scope = "workspace_symbol" })
 end, { desc = "Search symbols (workspace)" })
 
+vim.keymap.set('n', '<leader>/', function()
+  require("mini.pick").builtin.grep_live({
+    tool = 'rg',
+  })
+end)
+
+vim.keymap.set('n', '<leader>?', function()
+  require("mini.pick").builtin.grep_live({
+    tool = 'rg',
+	pattern = vim.fn.expand('<cword>'),
+  })
+end)
 
 -- lsp
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -65,7 +80,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 vim.cmd("set completeopt+=noselect")
 
-
+-- set some keymaps (overwriting built-ins) that actually go to definitions etc
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('lsp_keys', { clear = true }),
 	callback = function(ev)
@@ -77,7 +92,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end,
 })
 
-vim.lsp.enable({ "lua_ls", "pyright" })
+vim.lsp.enable({ "lua_ls", "ty", "ruff", "yamlls" })
 
 vim.lsp.config("lua_ls", {
 	settings = {
