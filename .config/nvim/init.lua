@@ -1,6 +1,9 @@
 -- style & admin
 vim.opt.termguicolors = true
-vim.opt.tabstop = 4
+vim.opt.tabstop = 4 -- A TAB character looks like 4 spaces
+vim.opt.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
+vim.opt.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
+vim.opt.shiftwidth = 4 -- Number of spaces inserted when indentingim.opt.tabstop = 4
 vim.opt.winborder = "rounded"
 vim.opt.clipboard = "unnamedplus"
 vim.opt.signcolumn = "yes"
@@ -19,6 +22,81 @@ vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
 -- toggle between two files
 vim.keymap.set('n', '<leader>s', ':e #<CR>')
 
+
+-- core helper: find and return {start_line, end_line}
+local function get_python_def_range()
+  -- nearest def above
+  local found = vim.fn.search([[^\s*def\s\+\k\+]], 'bW')
+  if found == 0 then
+    return nil, "No def found above"
+  end
+
+  local start_line   = vim.fn.line('.')
+  local start_indent = vim.fn.indent(start_line)
+  local last_line    = vim.fn.line('$')
+
+  local end_line = start_line
+  local last_nonblank_in_block = start_line
+
+  for l = start_line + 1, last_line do
+    local text = vim.fn.getline(l)
+    if text:match('%S') then
+      local ind = vim.fn.indent(l)
+      if ind <= start_indent then
+        end_line = last_nonblank_in_block
+        break
+      else
+        end_line = l
+        last_nonblank_in_block = l
+      end
+    else
+      end_line = l
+    end
+  end
+
+  if end_line == last_line and end_line > last_nonblank_in_block then
+    end_line = last_nonblank_in_block
+  end
+
+  return start_line, end_line
+end
+
+-- [m: select method
+local function select_python_def()
+  local s, e = get_python_def_range()
+  if not s then
+    vim.notify(e, vim.log.levels.INFO)
+    return
+  end
+  vim.api.nvim_win_set_cursor(0, { s, 0 })
+  vim.cmd('normal! V')
+  vim.api.nvim_win_set_cursor(0, { e, 0 })
+end
+
+-- <leader>ym: yank method
+local function yank_python_def()
+  local s, e = get_python_def_range()
+  if not s then
+    vim.notify(e, vim.log.levels.INFO)
+    return
+  end
+  vim.cmd(string.format("%d,%dy", s, e))
+end
+
+-- <leader>dm: delete method
+local function delete_python_def()
+  local s, e = get_python_def_range()
+  if not s then
+    vim.notify(e, vim.log.levels.INFO)
+    return
+  end
+  vim.cmd(string.format("%d,%dd", s, e))
+end
+
+-- keymaps
+vim.keymap.set('n', '<leader>vm', select_python_def, { desc = 'Select python def' })
+vim.keymap.set('n', '<leader>ym', yank_python_def, { desc = 'Yank python def' })
+vim.keymap.set('n', '<leader>dm', delete_python_def, { desc = 'Delete python def' })
 -- don't start new comment paragraph with 'o' or 'O'
 -- when in comment context (enter still works)
 -- okay apparently this needs to be sourced to work? idk...
@@ -92,7 +170,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end,
 })
 
-vim.lsp.enable({ "lua_ls", "ty", "ruff", "yamlls" })
+vim.lsp.enable({ "lua_ls", "ty",  "yamlls" })
 
 vim.lsp.config("lua_ls", {
 	settings = {
