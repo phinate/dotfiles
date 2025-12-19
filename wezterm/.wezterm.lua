@@ -8,14 +8,15 @@ if wezterm.config_builder then
 end
 
 local fonts = {
+    "Cascadia Code",
 	"ComicCodeLigatures Nerd Font",
 }
 local emoji_fonts = { "Apple Color Emoji", "Joypixels", "Twemoji", "Noto Color Emoji", "Noto Emoji" }
 
-config.font = wezterm.font_with_fallback({ fonts[1], emoji_fonts[1], emoji_fonts[2] })
+config.font = wezterm.font_with_fallback({ fonts[1], fonts[2], emoji_fonts[1], emoji_fonts[2] })
 config.enable_scroll_bar = false
 config.scrollback_lines = 10240
-config.font_size = 13
+config.font_size = 12
 config.enable_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
 config.automatically_reload_config = true
@@ -30,12 +31,12 @@ config.window_padding = {
 	top = 30,
 	bottom = 30,
 }
-config.window_frame = {
-	font = wezterm.font({ family = "ComicCodeLigatures Nerd Font" }),
-	active_titlebar_bg = "#1e1e1e",
-	inactive_titlebar_bg = "#1e1e1e",
-	font_size = 12.0,
-}
+-- config.window_frame = {
+-- 	font = wezterm.font({ family = "ComicCodeLigatures Nerd Font" }),
+-- 	active_titlebar_bg = "#1e1e1e",
+-- 	inactive_titlebar_bg = "#1e1e1e",
+-- 	font_size = 12.0,
+-- }
 
 -- Leader is CMD+a
 config.leader = { key = 'a', mods = 'CMD', timeout_milliseconds = 1000 }
@@ -109,16 +110,16 @@ config.colors = {
 
 local mux = wezterm.mux
 
-wezterm.on('gui-startup', function(cmd)
-  local tab, pane, window = mux.spawn_window(cmd or {})
-  pane:split { direction = "Bottom", size = 0.3 }
-  window:perform_action(wezterm.action.ActivatePaneDirection("Up"), pane)
-
-end)
+-- wezterm.on('gui-startup', function(cmd)
+--   local tab, pane, window = mux.spawn_window(cmd or {})
+--   pane:split { direction = "Bottom", size = 0.3 }
+--   window:perform_action(wezterm.action.ActivatePaneDirection("Up"), pane)
+--
+-- end)
 
 config.native_macos_fullscreen_mode = false
 config.show_update_window = false
-config.window_background_opacity = 0.95
+config.window_background_opacity = 0.98
 
 -- Return the config table at the end
 return config

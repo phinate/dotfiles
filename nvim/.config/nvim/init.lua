@@ -9,6 +9,9 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.signcolumn = "yes"
 vim.opt.swapfile = false
 vim.opt.cursorcolumn = false
+-- nice bracket behaviour
+-- vim.opt.autoindent = true
+vim.opt.smartindent = true
 vim.opt.number = true
 
 -- leader & keybinds
@@ -111,17 +114,33 @@ vim.pack.add({
 	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/echasnovski/mini.extra" },
 	{ src = "https://github.com/stevearc/oil.nvim" },
+    { src = "https://github.com/echasnovski/mini.pairs" },
 })
 
 require "mini.pick".setup()
 require "mini.extra".setup()
+require "mini.pairs".setup()
 require "mason".setup()
 require "nvim-treesitter.configs".setup({
 	ensure_installed = { "python" },
-	highlight = { enable = true }
+	highlight = { enable = true },
 })
-require "oil".setup()
-
+require("oil").setup({
+	lsp_file_methods = {
+		enabled = true,
+		timeout_ms = 1000,
+		autosave_changes = true,
+	},
+	columns = {
+		"permissions",
+		"icon",
+	},
+	float = {
+		max_width = 0.7,
+		max_height = 0.6,
+		border = "rounded",
+	},
+})
 -- plugin-specific maps
 vim.keymap.set('n', '<leader>f', ":Pick files tool='rg'<CR>")
 vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
@@ -170,7 +189,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end,
 })
 
-vim.lsp.enable({ "lua_ls", "ty",  "yamlls" })
+vim.lsp.enable({ "lua_ls", "ty",  "yamlls", "haskell-language-server" })
 
 vim.lsp.config("lua_ls", {
 	settings = {
