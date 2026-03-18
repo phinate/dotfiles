@@ -1,7 +1,20 @@
 export CLAUDE_CODE_OAUTH_TOKEN=(security find-generic-password -a "$USER" -s "claude oauth" -w)
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/nsimpson/.lmstudio/bin"
-# End of LM Studio CLI section
+
+# Default to Sonnet for ~60% cost savings (switch to opus mid-session with /model opus when needed)
+export ANTHROPIC_MODEL="claude-opus-4-6"
+ 
+# Use Haiku for subagents — massive token savings on exploration/review tasks
+export CLAUDE_CODE_SUBAGENT_MODEL="haiku"
+ 
+# Trigger auto-compaction at 50% context instead of default ~83%
+# Prevents the quality degradation that happens when context gets too full
+export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50
+ 
+# Cap thinking tokens for routine work (raise for architecture tasks)
+export MAX_THINKING_TOKENS=10000
+ 
+# Strip telemetry/analytics traffic to reduce noise
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
 # ls alias for color, directories and all dotfiles
 alias ls='ls -GpA'
