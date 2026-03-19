@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.pytorch.org)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "default"
+  },
+  "model": "opus",
+  "alwaysThinkingEnabled": true,
+  "voiceEnabled": true
+}
