@@ -1,24 +1,34 @@
-export CLAUDE_CODE_OAUTH_TOKEN=(security find-generic-password -a "$USER" -s "claude oauth" -w)
-
-# Default to Sonnet for ~60% cost savings (switch to opus mid-session with /model opus when needed)
-export ANTHROPIC_MODEL="claude-opus-4-6"
- 
-# Use Haiku for subagents — massive token savings on exploration/review tasks
-export CLAUDE_CODE_SUBAGENT_MODEL="haiku"
- 
+    
+export PATH="/opt/homebrew/bin:$PATH"
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgreprc"
+# secretive
+export SSH_AUTH_SOCK=/Users/nathan.simpson/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+# vibe/codex
+export AZURE_OPENAI_API_KEY='dont-worry-this-key-will-be-auto-injected'
+# claude code
+export CLAUDE_CODE_USE_FOUNDRY=1
+export CLAUDE_CODE_USE_VERTEX=1
+export CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+export ANTHROPIC_FOUNDRY_BASE_URL='https://REDACTED/anthropic'
+export ANTHROPIC_FOUNDRY_API_KEY='dont-worry-this-key-will-be-auto-injected'
+export ANTHROPIC_DEFAULT_OPUS_MODEL='claude-opus-4-8'
+#export ANTHROPIC_DEFAULT_SONNET_MODEL='claude-sonnet-4-6'
+#export ANTHROPIC_DEFAULT_HAIKU_MODEL='claude-haiku-4-5'
 # Trigger auto-compaction at 50% context instead of default ~83%
 # Prevents the quality degradation that happens when context gets too full
-export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50
- 
+export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70
 # Cap thinking tokens for routine work (raise for architecture tasks)
-export MAX_THINKING_TOKENS=10000
- 
+export MAX_THINKING_TOKENS=200000
 # Strip telemetry/analytics traffic to reduce noise
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
 # ls alias for color, directories and all dotfiles
 alias ls='ls -GpA'
 
+# SSH to the rno login pod (-t forces a PTY) and attach to / create a
+# persistent tmux session named "main", so work survives disconnects.
+alias rno='ssh -t rno "tmux new -A -s main"'
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -43,4 +53,19 @@ export EDITOR='nvim'
 
 eval "$(starship init zsh)"
 
-[ -f "/Users/nsimpson/.ghcup/env" ] && . "/Users/nsimpson/.ghcup/env" # ghcup-env
+
+. "$HOME/.local/bin/env"
+
+# 🐸 froracle — a frog greets every new shell. See zsh/froracle.zsh.
+[[ -f "$HOME/Code/dotfiles/zsh/froracle.zsh" ]] && \
+  source "$HOME/Code/dotfiles/zsh/froracle.zsh"
+
+# pnpm
+export PNPM_HOME="/Users/nathan.simpson/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
+
+[ -f "/Users/nathan.simpson/.ghcup/env" ] && . "/Users/nathan.simpson/.ghcup/env" # ghcup-env
